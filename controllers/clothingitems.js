@@ -1,4 +1,4 @@
-const ClothingItem = require("../models/ClothingItem");
+const ClothingItem = require("../models/ClothingItem.js");
 const ERROR_CODES = require("../utils/errors");
 
 // Get all clothing items
@@ -12,7 +12,8 @@ module.exports.getClothingItems = (req, res) => {
         return res.status(ERROR_CODES.BAD_REQUEST).send({
           message: "Invalid data passed to the methods for creating a user",
         });
-      } else if (err.name === "CastError") {
+      }
+      if (err.name === "CastError") {
         return res.status(ERROR_CODES.BAD_REQUEST).send({
           message: "Invalid ID format",
         });
@@ -38,7 +39,8 @@ module.exports.createClothingItem = (req, res) => {
         return res.status(ERROR_CODES.BAD_REQUEST).send({
           message: "Invalid data passed to the methods for creating an item",
         });
-      } else if (err.name === "CastError") {
+      }
+      if (err.name === "CastError") {
         return res.status(ERROR_CODES.BAD_REQUEST).send({
           message: "Invalid ID format",
         });
@@ -67,7 +69,8 @@ module.exports.deleteClothingItem = (req, res) => {
         return res.status(ERROR_CODES.BAD_REQUEST).send({
           message: "Invalid data passed to the methods for creating a user",
         });
-      } else if (err.name === "CastError") {
+      }
+      if (err.name === "CastError") {
         return res.status(ERROR_CODES.BAD_REQUEST).send({
           message: "Invalid ID format",
         });
@@ -79,7 +82,7 @@ module.exports.deleteClothingItem = (req, res) => {
     });
 };
 
-//like a clothing item
+// like a clothing item
 module.exports.likeItem = (req, res) =>
   ClothingItem.findByIdAndUpdate(
     req.params.itemId,
@@ -89,8 +92,13 @@ module.exports.likeItem = (req, res) =>
       },
     }, // add _id to the array if it's not there yet
     { new: true }
-  );
-//dislike a clothing item
+  )
+    .then((item) => res.status(200).send({ data: item }))
+    .catch((err) => {
+      console.log(err);
+    });
+
+// dislike a clothing item
 module.exports.dislikeItem = (req, res) =>
   ClothingItem.findByIdAndUpdate(
     req.params.itemId,
@@ -100,4 +108,8 @@ module.exports.dislikeItem = (req, res) =>
       },
     }, // remove _id from the array
     { new: true }
-  );
+  )
+    .then((item) => res.status(200).send({ data: item }))
+    .catch((err) => {
+      console.log(err);
+    });
