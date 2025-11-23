@@ -55,9 +55,6 @@ module.exports.deleteClothingItem = (req, res) => {
   ClothingItem.findByIdAndDelete(req.params.itemId)
     .orFail()
     .then((item) => {
-      if (!item) {
-        return res.status(404).send({ message: "Clothing item not found" });
-      }
       return res.status(200).send({ data: item });
     })
     .catch((err) => {
@@ -68,6 +65,10 @@ module.exports.deleteClothingItem = (req, res) => {
           message: "Invalid data passed to the methods for creating a user",
         });
       }
+      if (err.name === "DocumentNotFoundError")
+        return res
+          .status(ERROR_CODES.NOT_FOUND)
+          .send({ message: "Clothing item not found" });
       if (err.name === "CastError") {
         return res.status(ERROR_CODES.BAD_REQUEST).send({
           message: "Invalid ID format",
@@ -90,9 +91,27 @@ module.exports.likeItem = (req, res) =>
     }, // add _id to the array if it's not there yet
     { new: true }
   )
+    .orFail()
     .then((item) => res.status(200).send({ data: item }))
     .catch((err) => {
       console.log(err);
+      if (err.name === "ValidationError") {
+        return res.status(ERROR_CODES.BAD_REQUEST).send({
+          message: "Invalid data passed to the methods for creating a user",
+        });
+      }
+      if (err.name === "DocumentNotFoundError")
+        return res
+          .status(ERROR_CODES.NOT_FOUND)
+          .send({ message: "Clothing item not found" });
+      if (err.name === "CastError") {
+        return res.status(ERROR_CODES.BAD_REQUEST).send({
+          message: "Invalid ID format",
+        });
+      }
+      return res.status(ERROR_CODES.SERVER_ERROR).send({
+        message: "An error has occurred on the server",
+      });
     });
 
 // dislike a clothing item
@@ -106,7 +125,25 @@ module.exports.dislikeItem = (req, res) =>
     }, // remove _id from the array
     { new: true }
   )
+    .orFail()
     .then((item) => res.status(200).send({ data: item }))
     .catch((err) => {
       console.log(err);
+      if (err.name === "ValidationError") {
+        return res.status(ERROR_CODES.BAD_REQUEST).send({
+          message: "Invalid data passed to the methods for creating a user",
+        });
+      }
+      if (err.name === "DocumentNotFoundError")
+        return res
+          .status(ERROR_CODES.NOT_FOUND)
+          .send({ message: "Clothing item not found" });
+      if (err.name === "CastError") {
+        return res.status(ERROR_CODES.BAD_REQUEST).send({
+          message: "Invalid ID format",
+        });
+      }
+      return res.status(ERROR_CODES.SERVER_ERROR).send({
+        message: "An error has occurred on the server",
+      });
     });
