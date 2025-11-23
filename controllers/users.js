@@ -17,11 +17,10 @@ module.exports.getUsers = (req, res) => {
         return res.status(ERROR_CODES.BAD_REQUEST).send({
           message: "Invalid ID format",
         });
-      } else {
-        return res.status(ERROR_CODES.SERVER_ERROR).send({
-          message: "An error has occurred on the server",
-        });
       }
+      res.status(ERROR_CODES.SERVER_ERROR).send({
+        message: "An error has occurred on the server",
+      });
     });
 };
 
@@ -48,11 +47,10 @@ module.exports.getUser = (req, res) => {
         return res.status(ERROR_CODES.BAD_REQUEST).send({
           message: "Invalid ID format",
         });
-      } else {
-        return res.status(ERROR_CODES.SERVER_ERROR).send({
-          message: "An error has occurred on the server",
-        });
       }
+      res.status(ERROR_CODES.SERVER_ERROR).send({
+        message: "An error has occurred on the server",
+      });
     });
 };
 
@@ -73,10 +71,9 @@ module.exports.createUser = (req, res) => {
         return res.status(ERROR_CODES.BAD_REQUEST).send({
           message: "Invalid ID format",
         });
-      } else {
-        return res.status(ERROR_CODES.SERVER_ERROR).send({
-          message: "An error has occurred on the server",
-        });
       }
+      res.status(ERROR_CODES.SERVER_ERROR).send({
+        message: "An error has occurred on the server",
+      });
     });
 };

@@ -1,4 +1,4 @@
-const ClothingItem = require("../models/ClothingItem.js");
+const ClothingItem = require("../models/ClothingItem");
 const ERROR_CODES = require("../utils/errors");
 
 // Get all clothing items
@@ -17,11 +17,10 @@ module.exports.getClothingItems = (req, res) => {
         return res.status(ERROR_CODES.BAD_REQUEST).send({
           message: "Invalid ID format",
         });
-      } else {
-        return res.status(ERROR_CODES.SERVER_ERROR).send({
-          message: "An error has occurred on the server",
-        });
       }
+      res.status(ERROR_CODES.SERVER_ERROR).send({
+        message: "An error has occurred on the server",
+      });
     });
 };
 
@@ -44,11 +43,10 @@ module.exports.createClothingItem = (req, res) => {
         return res.status(ERROR_CODES.BAD_REQUEST).send({
           message: "Invalid ID format",
         });
-      } else {
-        return res.status(ERROR_CODES.SERVER_ERROR).send({
-          message: "An error has occurred on the server",
-        });
       }
+      res.status(ERROR_CODES.SERVER_ERROR).send({
+        message: "An error has occurred on the server",
+      });
     });
 };
 
@@ -74,17 +72,16 @@ module.exports.deleteClothingItem = (req, res) => {
         return res.status(ERROR_CODES.BAD_REQUEST).send({
           message: "Invalid ID format",
         });
-      } else {
-        return res.status(ERROR_CODES.SERVER_ERROR).send({
-          message: "An error has occurred on the server",
-        });
       }
+      res.status(ERROR_CODES.SERVER_ERROR).send({
+        message: "An error has occurred on the server",
+      });
     });
 };
 
 // like a clothing item
-module.exports.likeItem = (req, res) =>
-  ClothingItem.findByIdAndUpdate(
+module.exports.likeItem = (req, res) => {
+  return ClothingItem.findByIdAndUpdate(
     req.params.itemId,
     {
       $addToSet: {
@@ -97,10 +94,11 @@ module.exports.likeItem = (req, res) =>
     .catch((err) => {
       console.log(err);
     });
+};
 
 // dislike a clothing item
-module.exports.dislikeItem = (req, res) =>
-  ClothingItem.findByIdAndUpdate(
+module.exports.dislikeItem = (req, res) => {
+  return ClothingItem.findByIdAndUpdate(
     req.params.itemId,
     {
       $pull: {
@@ -113,3 +111,4 @@ module.exports.dislikeItem = (req, res) =>
     .catch((err) => {
       console.log(err);
     });
+};
