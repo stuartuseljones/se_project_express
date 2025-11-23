@@ -1,9 +1,9 @@
-const ClothingItem = require("../models/ClothingItem");
+const ClothingItem = require("../models/clothingitem.js");
 const ERROR_CODES = require("../utils/errors");
 
 // Get all clothing items
 module.exports.getClothingItems = (req, res) => {
-  ClothingItem.find({})
+  return ClothingItem.find({})
     .then((items) => res.status(200).send({ data: items }))
     .catch((err) => {
       console.log(err);
@@ -18,7 +18,7 @@ module.exports.getClothingItems = (req, res) => {
           message: "Invalid ID format",
         });
       }
-      res.status(ERROR_CODES.SERVER_ERROR).send({
+      return res.status(ERROR_CODES.SERVER_ERROR).send({
         message: "An error has occurred on the server",
       });
     });
@@ -29,7 +29,7 @@ module.exports.createClothingItem = (req, res) => {
   console.log(req.user._id); // _id will become accessible
   const { name, weather, imageUrl } = req.body;
 
-  ClothingItem.create({ name, weather, imageUrl, owner: req.user._id })
+  return ClothingItem.create({ name, weather, imageUrl, owner: req.user._id })
     .then((item) => res.status(201).send({ data: item }))
     .catch((err) => {
       console.log(err);
@@ -44,7 +44,7 @@ module.exports.createClothingItem = (req, res) => {
           message: "Invalid ID format",
         });
       }
-      res.status(ERROR_CODES.SERVER_ERROR).send({
+      return res.status(ERROR_CODES.SERVER_ERROR).send({
         message: "An error has occurred on the server",
       });
     });
@@ -58,7 +58,7 @@ module.exports.deleteClothingItem = (req, res) => {
       if (!item) {
         return res.status(404).send({ message: "Clothing item not found" });
       }
-      res.status(200).send({ data: item });
+      return res.status(200).send({ data: item });
     })
     .catch((err) => {
       console.log(err);
@@ -73,15 +73,15 @@ module.exports.deleteClothingItem = (req, res) => {
           message: "Invalid ID format",
         });
       }
-      res.status(ERROR_CODES.SERVER_ERROR).send({
+      return res.status(ERROR_CODES.SERVER_ERROR).send({
         message: "An error has occurred on the server",
       });
     });
 };
 
 // like a clothing item
-module.exports.likeItem = (req, res) => {
-  return ClothingItem.findByIdAndUpdate(
+module.exports.likeItem = (req, res) =>
+  ClothingItem.findByIdAndUpdate(
     req.params.itemId,
     {
       $addToSet: {
@@ -94,11 +94,10 @@ module.exports.likeItem = (req, res) => {
     .catch((err) => {
       console.log(err);
     });
-};
 
 // dislike a clothing item
-module.exports.dislikeItem = (req, res) => {
-  return ClothingItem.findByIdAndUpdate(
+module.exports.dislikeItem = (req, res) =>
+  ClothingItem.findByIdAndUpdate(
     req.params.itemId,
     {
       $pull: {
@@ -111,4 +110,3 @@ module.exports.dislikeItem = (req, res) => {
     .catch((err) => {
       console.log(err);
     });
-};

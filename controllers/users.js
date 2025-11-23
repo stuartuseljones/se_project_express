@@ -3,7 +3,7 @@ const ERROR_CODES = require("../utils/errors");
 
 // Get all users
 module.exports.getUsers = (req, res) => {
-  User.find({})
+  return User.find({})
     .then((users) => res.status(200).send({ data: users }))
     .catch((err) => {
       console.log(err);
@@ -29,7 +29,7 @@ module.exports.getUser = (req, res) => {
   User.findById(req.params.userId)
     .orFail()
     .then((user) => {
-      res.status(200).send({ data: user });
+      return res.status(200).send({ data: user });
     })
     .catch((err) => {
       console.log(err);
