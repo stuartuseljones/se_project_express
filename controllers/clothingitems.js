@@ -1,9 +1,9 @@
-const ClothingItem = require("../models/clothingitem.js");
+const ClothingItem = require("../models/clothingitem");
 const ERROR_CODES = require("../utils/errors");
 
 // Get all clothing items
-module.exports.getClothingItems = (req, res) => {
-  return ClothingItem.find({})
+module.exports.getClothingItems = (req, res) =>
+  ClothingItem.find({})
     .then((items) => res.status(200).send({ data: items }))
     .catch((err) => {
       console.log(err);
@@ -22,7 +22,6 @@ module.exports.getClothingItems = (req, res) => {
         message: "An error has occurred on the server",
       });
     });
-};
 
 // Create a new clothing item
 module.exports.createClothingItem = (req, res) => {

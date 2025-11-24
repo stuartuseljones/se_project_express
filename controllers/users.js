@@ -18,7 +18,7 @@ module.exports.getUsers = (req, res) => {
           message: "Invalid ID format",
         });
       }
-      res.status(ERROR_CODES.SERVER_ERROR).send({
+      return res.status(ERROR_CODES.SERVER_ERROR).send({
         message: "An error has occurred on the server",
       });
     });
@@ -48,7 +48,7 @@ module.exports.getUser = (req, res) => {
           message: "Invalid ID format",
         });
       }
-      res.status(ERROR_CODES.SERVER_ERROR).send({
+      return res.status(ERROR_CODES.SERVER_ERROR).send({
         message: "An error has occurred on the server",
       });
     });
@@ -72,7 +72,7 @@ module.exports.createUser = (req, res) => {
           message: "Invalid ID format",
         });
       }
-      res.status(ERROR_CODES.SERVER_ERROR).send({
+      return res.status(ERROR_CODES.SERVER_ERROR).send({
         message: "An error has occurred on the server",
       });
     });
