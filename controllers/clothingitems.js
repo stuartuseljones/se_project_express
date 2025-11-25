@@ -7,17 +7,6 @@ module.exports.getClothingItems = (req, res) =>
     .then((items) => res.status(200).send({ data: items }))
     .catch((err) => {
       console.log(err);
-
-      if (err.name === "ValidationError") {
-        return res.status(ERROR_CODES.BAD_REQUEST).send({
-          message: "Invalid data passed to the methods for creating a user",
-        });
-      }
-      if (err.name === "CastError") {
-        return res.status(ERROR_CODES.BAD_REQUEST).send({
-          message: "Invalid ID format",
-        });
-      }
       return res.status(ERROR_CODES.SERVER_ERROR).send({
         message: "An error has occurred on the server",
       });
@@ -53,9 +42,7 @@ module.exports.createClothingItem = (req, res) => {
 module.exports.deleteClothingItem = (req, res) => {
   ClothingItem.findByIdAndDelete(req.params.itemId)
     .orFail()
-    .then((item) => {
-      return res.status(200).send({ data: item });
-    })
+    .then((item) => res.status(200).send({ data: item }))
     .catch((err) => {
       console.log(err);
 

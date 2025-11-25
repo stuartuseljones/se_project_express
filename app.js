@@ -17,10 +17,6 @@ app.use((req, res, next) => {
   next();
 });
 
-app.get("/", (req, res) => {
-  res.status(200).send("OK");
-});
-
 app.use("/users", require("./routes/users"));
 app.use("/items", require("./routes/clothingitems"));
 
