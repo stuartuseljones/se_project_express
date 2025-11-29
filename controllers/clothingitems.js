@@ -40,44 +40,38 @@ module.exports.createClothingItem = (req, res) => {
 
 // Delete a clothing item by ID
 module.exports.deleteClothingItem = (req, res) => {
-  const currentUser = req.user;
-
   ClothingItem.findById(req.params.itemId)
     .orFail()
     .then((item) => {
       if (item.owner.toString() === String(req.user._id)) {
-        res.status(200).send({ data: item });
+        ClothingItem.findByIdAndDelete(req.params.itemId).then(() =>
+          res.status(200).send({ data: item })
+        );
       } else {
         res.status(ERROR_CODES.FORBIDDEN).send({
           message: "You do not have permission to delete this item",
         });
       }
     })
-    .then(
-      ClothingItem.findByIdAndDelete(req.params.itemId)
-        .orFail()
-        .catch((err) => {
-          console.log(err);
-
-          if (err.name === "ValidationError") {
-            return res.status(ERROR_CODES.BAD_REQUEST).send({
-              message: "Invalid data passed to the methods for creating a user",
-            });
-          }
-          if (err.name === "DocumentNotFoundError")
-            return res
-              .status(ERROR_CODES.NOT_FOUND)
-              .send({ message: "Clothing item not found" });
-          if (err.name === "CastError") {
-            return res.status(ERROR_CODES.BAD_REQUEST).send({
-              message: "Invalid ID format",
-            });
-          }
-          return res.status(ERROR_CODES.SERVER_ERROR).send({
-            message: "An error has occurred on the server",
-          });
-        })
-    );
+    .catch((err) => {
+      if (err.name === "ValidationError") {
+        return res.status(ERROR_CODES.BAD_REQUEST).send({
+          message: "Invalid data passed to the methods for creating a user",
+        });
+      }
+      if (err.name === "DocumentNotFoundError")
+        return res
+          .status(ERROR_CODES.NOT_FOUND)
+          .send({ message: "Clothing item not found" });
+      if (err.name === "CastError") {
+        return res.status(ERROR_CODES.BAD_REQUEST).send({
+          message: "Invalid ID format",
+        });
+      }
+      return res.status(ERROR_CODES.SERVER_ERROR).send({
+        message: "An error has occurred on the server",
+      });
+    });
 };
 
 // like a clothing item

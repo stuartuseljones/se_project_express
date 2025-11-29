@@ -18,9 +18,9 @@ app.use(express.json());
 
 app.use("/", indexRouter);
 app.use("/items", require("./routes/clothingitems"));
-app.use(auth);
 app.use("/users", require("./routes/users"));
 
+app.use(auth);
 app.use((req, res) => {
   res
     .status(ERROR_CODES.NOT_FOUND)
