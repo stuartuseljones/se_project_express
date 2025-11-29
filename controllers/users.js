@@ -7,17 +7,6 @@ const User = require("../models/user");
 const ERROR_CODES = require("../utils/errors");
 const { JWT_SECRET } = require("../utils/config");
 
-// Get all users
-module.exports.getUsers = (req, res) =>
-  User.find({})
-    .then((users) => res.status(200).send({ data: users }))
-    .catch((err) => {
-      console.log(err);
-      return res.status(ERROR_CODES.SERVER_ERROR).send({
-        message: "An error has occurred on the server",
-      });
-    });
-
 // Get user by ID
 module.exports.getCurrentUser = (req, res) => {
   User.findById(req.user._id)
@@ -119,11 +108,15 @@ module.exports.login = (req, res) => {
       res.send({ token });
     })
     .catch((err) => {
-      // authentication error
       console.log(err);
-      res
-        .status(ERROR_CODES.UNAUTHORIZED)
-        .send({ message: "Incorrect email or password" });
+      if (err.message === "Incorrect email or password") {
+        return res
+          .status(ERROR_CODES.UNAUTHORIZED)
+          .send({ message: "Incorrect email or password" });
+      }
+      return res
+        .status(ERROR_CODES.SERVER_ERROR)
+        .send({ message: "An error has occurred on the server" });
     });
 };
 

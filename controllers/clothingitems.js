@@ -45,7 +45,7 @@ module.exports.deleteClothingItem = (req, res) => {
   ClothingItem.findById(req.params.itemId)
     .orFail()
     .then((item) => {
-      if (currentUser._id === item.owner._id) {
+      if (item.owner.toString() === String(req.user._id)) {
         res.status(200).send({ data: item });
       } else {
         res.status(ERROR_CODES.FORBIDDEN).send({

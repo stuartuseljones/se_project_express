@@ -17,9 +17,9 @@ const PORT = process.env.PORT || 3001;
 app.use(express.json());
 
 app.use("/", indexRouter);
+app.use("/items", require("./routes/clothingitems"));
 app.use(auth);
 app.use("/users", require("./routes/users"));
-app.use("/items", require("./routes/clothingitems"));
 
 app.use((req, res) => {
   res
