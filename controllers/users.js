@@ -1,9 +1,11 @@
+const validator = require("validator");
+const jwt = require("jsonwebtoken");
+const bcrypt = require("bcryptjs");
+
+// Import Components
 const User = require("../models/user");
 const ERROR_CODES = require("../utils/errors");
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
 const { JWT_SECRET } = require("../utils/config");
-const validator = require("validator");
 
 // Get all users
 module.exports.getUsers = (req, res) =>
@@ -50,13 +52,14 @@ module.exports.createUser = (req, res) => {
   bcrypt.hash(password, 10).then((hash) => {
     User.create({ name, avatar, email, password: hash })
       .then((user) => {
-        delete user._doc.password; // remove password from the returned user object
         if (!user) {
           return res
             .status(ERROR_CODES.CONFLICT)
             .send({ message: "User creation failed" });
         }
-        res.status(201).send({ data: user });
+        const userObj = user.toObject();
+        delete userObj.password; // remove password from the returned user object
+        return res.status(201).send({ data: userObj });
       })
 
       .catch((err) => {
@@ -117,6 +120,7 @@ module.exports.login = (req, res) => {
     })
     .catch((err) => {
       // authentication error
+      console.log(err);
       res
         .status(ERROR_CODES.UNAUTHORIZED)
         .send({ message: "Incorrect email or password" });

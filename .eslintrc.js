@@ -20,6 +20,6 @@ module.exports = {
     sourceType: "module",
   },
   rules: {
-    "no-underscore-dangle": ["error", { allow: ["_", "_id"] }],
+    "no-underscore-dangle": ["error", { allow: ["_", "_id", "_doc"] }],
   },
 };

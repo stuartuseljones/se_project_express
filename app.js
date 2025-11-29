@@ -1,11 +1,13 @@
 const express = require("express");
 const mongoose = require("mongoose");
-const ERROR_CODES = require("./utils/errors");
-const indexRouter = require("./routes/index");
-const app = express();
-const auth = require("./middlewares/auth");
 const cors = require("cors");
 
+const ERROR_CODES = require("./utils/errors");
+const indexRouter = require("./routes/index");
+
+const auth = require("./middlewares/auth");
+
+const app = express();
 app.use(cors());
 
 mongoose.connect("mongodb://127.0.0.1:27017/wtwr_db");

@@ -15,9 +15,11 @@ function auth(req, res, next) {
     const token = authorization.replace("Bearer ", "");
     const payload = jwt.verify(token, JWT_SECRET);
     req.user = payload; // assign the payload to req.user
-    next();
+    return next();
   } catch (err) {
-    res.status(ERROR_CODES.UNAUTHORIZED).send({ message: "Invalid token" });
+    return res
+      .status(ERROR_CODES.UNAUTHORIZED)
+      .send({ message: "Invalid token" });
   }
 }
 module.exports = auth;
