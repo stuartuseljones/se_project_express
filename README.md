@@ -1,5 +1,6 @@
 # WTWR (What to Wear?): Back End
 
-This back-end project focused on creating a server for the WTWR application. I set up routing, controllers, validation, and database creation. It was a blast seeing it all work! Especially after iterating corrections that allowed it to pass automated server testing.
+Watch my overview video on Loom:
+https://www.loom.com/share/0276388936ed4cbc93be341bd60fc057
 
-Now the database can create new users, like items, create new items, delete items, and more!
+This back-end project focused on setting up backend security for the WTWR application. This was accomplished by expanding the user schema with an email and password, creating routes and controllers for signing up, signing in, and for modifying the current user data. As well as protecting existing routes through authorization.
