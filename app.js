@@ -22,6 +22,13 @@ app.use(express.json());
 
 app.use(requestLogger);
 
+// Crash test route, remove after review
+app.get("/crash-test", () => {
+  setTimeout(() => {
+    throw new Error("Server will crash now");
+  }, 0);
+});
+
 app.use("/", indexRouter);
 app.use("/items", require("./routes/clothingitems"));
 app.use("/users", auth, require("./routes/users"));
