@@ -8,75 +8,36 @@ const ERROR_CODES = require("../utils/errors");
 const { JWT_SECRET } = require("../utils/config");
 
 // Get user by ID
-module.exports.getCurrentUser = (req, res) => {
+module.exports.getCurrentUser = (req, res, next) => {
   User.findById(req.user._id)
     .orFail()
     .then((user) => res.status(200).send({ data: user }))
-    .catch((err) => {
-      console.log(err);
-      if (err.name === "DocumentNotFoundError") {
-        return res.status(ERROR_CODES.NOT_FOUND).send({
-          message: "User not found",
-        });
-      }
-      if (err.name === "ValidationError") {
-        return res.status(ERROR_CODES.BAD_REQUEST).send({
-          message: "Invalid data passed to the methods for creating a user",
-        });
-      }
-      if (err.name === "CastError") {
-        return res.status(ERROR_CODES.BAD_REQUEST).send({
-          message: "Invalid ID format",
-        });
-      }
-      return res.status(ERROR_CODES.SERVER_ERROR).send({
-        message: "An error has occurred on the server",
-      });
-    });
+    .catch(next);
 };
 
 // Create a new user
-module.exports.createUser = (req, res) => {
+module.exports.createUser = (req, res, next) => {
   const { name, avatar, email, password } = req.body;
-  bcrypt.hash(password, 10).then((hash) => {
-    User.create({ name, avatar, email, password: hash })
-      .then((user) => {
-        if (!user) {
-          return res
-            .status(ERROR_CODES.CONFLICT)
-            .send({ message: "User creation failed" });
-        }
-        const userObj = user.toObject();
-        delete userObj.password; // remove password from the returned user object
-        return res.status(201).send({ data: userObj });
-      })
-
-      .catch((err) => {
-        console.log(err);
-        if (err.code === 11000) {
-          console.log("Duplicate key error:");
-          return res.status(ERROR_CODES.CONFLICT).send({
-            message: "User with this email already exists",
-          });
-        }
-        if (err.name === "ValidationError") {
-          return res.status(ERROR_CODES.BAD_REQUEST).send({
-            message: "Invalid data passed to the methods for creating a user",
-          });
-        }
-        if (err.name === "CastError") {
-          return res.status(ERROR_CODES.BAD_REQUEST).send({
-            message: "Invalid ID format",
-          });
-        }
-        return res.status(ERROR_CODES.SERVER_ERROR).send({
-          message: "An error has occurred on the server",
-        });
-      });
-  });
+  bcrypt
+    .hash(password, 10)
+    .then((hash) => {
+      User.create({ name, avatar, email, password: hash })
+        .then((user) => {
+          if (!user) {
+            const err = new Error("User creation failed");
+            err.statusCode = 409;
+            throw err;
+          }
+          const userObj = user.toObject();
+          delete userObj.password; // remove password from the returned user object
+          return res.status(201).send({ data: userObj });
+        })
+        .catch(next);
+    })
+    .catch(next);
 };
 
-module.exports.login = (req, res) => {
+module.exports.login = (req, res, next) => {
   const { email, password } = req.body;
 
   if (!email || !email.trim()) {
@@ -108,42 +69,22 @@ module.exports.login = (req, res) => {
       res.send({ token });
     })
     .catch((err) => {
-      console.log(err);
       if (err.message === "Incorrect email or password") {
-        return res
-          .status(ERROR_CODES.UNAUTHORIZED)
-          .send({ message: "Incorrect email or password" });
+        err.statusCode = 401;
       }
-      return res
-        .status(ERROR_CODES.SERVER_ERROR)
-        .send({ message: "An error has occurred on the server" });
+      return next(err);
     });
 };
 
-module.exports.updateUser = (req, res) => {
+module.exports.updateUser = (req, res, next) => {
   const { name, avatar } = req.body;
 
   User.findByIdAndUpdate(
     req.user._id,
     { name, avatar },
-    { new: true, runValidators: true }
+    { new: true, runValidators: true },
   )
     .orFail()
     .then((user) => res.status(200).send({ data: user }))
-    .catch((err) => {
-      console.log(err);
-      if (err.name === "DocumentNotFoundError") {
-        return res.status(ERROR_CODES.NOT_FOUND).send({
-          message: "User not found",
-        });
-      }
-      if (err.name === "ValidationError") {
-        return res.status(ERROR_CODES.BAD_REQUEST).send({
-          message: "Invalid data passed to the methods for updating a user",
-        });
-      }
-      return res.status(ERROR_CODES.SERVER_ERROR).send({
-        message: "An error has occurred on the server",
-      });
-    });
+    .catch(next);
 };

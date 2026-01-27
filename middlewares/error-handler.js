@@ -1,23 +1,28 @@
 const errorHandler = (err, req, res, next) => {
   console.error(err);
-  let error = {
-    message: err.message || "Internal Server Error",
+  const error = {
+    message: err.message || 'Internal Server Error',
     status: err.statusCode || 500,
   };
 
   // Handle specific error types
-  if (err.name === "ValidationError") {
-    error.message = "Invalid data provided";
+  if (err.name === 'ValidationError') {
+    error.message = 'Invalid data provided';
     error.status = 400;
   }
 
-  if (err.name === "CastError") {
-    error.message = "Invalid ID format";
+  if (err.name === 'CastError') {
+    error.message = 'Invalid ID format';
     error.status = 400;
+  }
+
+  if (err.name === 'DocumentNotFoundError') {
+    error.message = 'Requested resource not found';
+    error.status = 404;
   }
 
   if (err.code === 11000) {
-    error.message = "Email already exists";
+    error.message = 'Email already exists';
     error.status = 409;
   }
 
