@@ -1,10 +1,12 @@
+import NotFoundError from './errors/not-found-err.js';
+
 require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 
 const { errors } = require('celebrate');
-const ERROR_CODES = require('./utils/errors');
+// const ERROR_CODES = require('./utils/errors');
 const indexRouter = require('./routes/index');
 const errorHandler = require('./middlewares/error-handler');
 
@@ -33,11 +35,7 @@ app.use('/', indexRouter);
 app.use('/items', require('./routes/clothingitems'));
 app.use('/users', auth, require('./routes/users'));
 
-app.use((req, res) => {
-  res
-    .status(ERROR_CODES.NOT_FOUND)
-    .send({ message: 'Requested resource not found' });
-});
+app.use((_req, _res, next) => next(new NotFoundError('Unauthorized')));
 app.use(errorLogger);
 
 app.use(errors());

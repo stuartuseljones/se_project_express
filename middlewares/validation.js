@@ -8,29 +8,6 @@ const validateURL = (value, helpers) => {
   return helpers.error('string.uri');
 };
 
-module.exports.validateId = celebrate({
-  params: Joi.object().keys({
-    id: Joi.string().hex().length(24).required()
-      .messages({
-        'string.length': 'The "id" parameter must be 24 hexadecimal characters',
-        'string.hex': 'The "id" parameter must be a valid hexadecimal string',
-        'any.required': 'The "id" parameter is required',
-      }),
-  }),
-});
-
-module.exports.validateUserId = celebrate({
-  params: Joi.object().keys({
-    userId: Joi.string().hex().length(24).required()
-      .messages({
-        'string.length':
-        'The "userId" parameter must be 24 hexadecimal characters',
-        'string.hex': 'The "userId" parameter must be a valid hexadecimal string',
-        'any.required': 'The "userId" parameter is required',
-      }),
-  }),
-});
-
 module.exports.validateItemId = celebrate({
   params: Joi.object().keys({
     itemId: Joi.string().hex().length(24).required()
