@@ -1,9 +1,10 @@
-const jwt = require('jsonwebtoken');
-const bcrypt = require('bcryptjs');
+const jwt = require("jsonwebtoken");
+const bcrypt = require("bcryptjs");
 
 // Import Components
-const User = require('../models/user');
-const { JWT_SECRET } = require('../utils/config');
+const User = require("../models/user");
+const { JWT_SECRET } = require("../utils/config");
+const UnauthorizedError = require("../errors/unauthorized-err");
 
 // Get user by ID
 module.exports.getCurrentUser = (req, res, next) => {
@@ -15,9 +16,7 @@ module.exports.getCurrentUser = (req, res, next) => {
 
 // Create a new user
 module.exports.createUser = (req, res, next) => {
-  const {
-    name, avatar, email, password,
-  } = req.body;
+  const { name, avatar, email, password } = req.body;
   bcrypt
     .hash(password, 10)
     .then((hash) => {
@@ -44,13 +43,13 @@ module.exports.login = (req, res, next) => {
     .then((user) => {
       // authentication successful! user is in the user variable
       const token = jwt.sign({ _id: user._id }, JWT_SECRET, {
-        expiresIn: '7d',
+        expiresIn: "7d",
       });
       res.send({ token });
     })
     .catch((err) => {
-      if (err.message === 'Incorrect email or password') {
-        err.statusCode = 401;
+      if (err.message === "Incorrect email or password") {
+        return next(new UnauthorizedError("Incorrect email or password"));
       }
       return next(err);
     });
