@@ -1,8 +1,4 @@
 # WTWR (What to Wear?): Back End
-
-App is live at:
-www.useljones.mumufarm.ca
-
 Frontend Repo:
 https://github.com/stuartuseljones/se_project_react
 
